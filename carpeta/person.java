@@ -1,5 +1,7 @@
 package carpeta;
 
+import java.time.LocalDate;
+
 public class person {
 
     String name;
@@ -8,6 +10,7 @@ public class person {
     String state;
     String rh;
     String phone;
+    LocalDate fechaIngreso; // necesaria para calcular períodos de vacaciones (RF-03)
 
     public person(
         String nombre,
@@ -15,14 +18,16 @@ public class person {
         String gender,
         String state,
         String rh,
-        String phone
+        String phone,
+        LocalDate fechaIngreso
     ) {
-        this.name = nombre;
-        this.document_id = cedula;
-        this.gender = gender;
-        this.state = state;
-        this.rh = rh;
-        this.phone = phone;
+        this.name         = nombre;
+        this.document_id  = cedula;
+        this.gender       = gender;
+        this.state        = state;
+        this.rh           = rh;
+        this.phone        = phone;
+        this.fechaIngreso = fechaIngreso;
     }
 
     public String getDocument_id() {
@@ -36,6 +41,7 @@ public class person {
                ", Genero: " + gender +
                ", Estado: " + state +
                ", RH: " + rh +
-               ", Telefono: " + phone;
+               ", Telefono: " + phone +
+               ", Fecha ingreso: " + fechaIngreso;
     }
 }
