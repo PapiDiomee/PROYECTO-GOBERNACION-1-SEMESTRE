@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -16,9 +18,9 @@ public class main {
     static ArrayList<Incentivo>               incentivos   = new ArrayList<>();
     static ArrayList<EvaluacionMedica>        evaluaciones = new ArrayList<>();
     static ArrayList<AccidenteLaboral>        accidentes   = new ArrayList<>();
-    static ArrayList<PerfilSociodemografico> perfiles      = new ArrayList<>();
+    static ArrayList<PerfilSociodemografico>  perfiles     = new ArrayList<>();
 
-    // ── Tipos de incentivo (RF-04) ───────────────────────────────────
+    // ── Constantes ───────────────────────────────────────────────────
     static final String[] TIPOS_INCENTIVO = {
         "Cumpleanos (Celebra la Vida)",
         "Tiempo de servicio",
@@ -26,15 +28,17 @@ public class main {
         "Capacitacion"
     };
 
-    // ── Tipos de concepto medico (RF-05) ────────────────────────────
     static final String[] CONCEPTOS_MEDICOS = {
         "Apto",
         "Apto con restricciones",
         "No apto"
     };
 
+    static final String CLAVE_DIRECTIVOS = "Directivos";
+
     static final Scanner           sc            = new Scanner(System.in);
-    static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    // CAMBIO 8: usar "d/M/yyyy" en lugar de "dd/MM/yyyy" para aceptar dígitos sueltos
+    static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("d/M/yyyy");
 
     // ================================================================
     // MAIN
@@ -42,39 +46,52 @@ public class main {
 
     public static void main(String[] args) {
 
-    Seed.personasCreadas(
-    personas,
-    contratos,
-    situaciones,
-    incentivos,
-    evaluaciones,
-    accidentes
-      );
-      
+        Seed.personasCreadas(personas, contratos, situaciones, incentivos, evaluaciones, accidentes);
+
+        // CAMBIO 1: pantalla de bienvenida
+        mostrarBienvenida();
+
         int opcion;
         do {
             opcion = leerOpcionMenuPrincipal();
             switch (opcion) {
-                case 1: menuPersonas();         break;
-                case 2: menuContratos();         break;
-                case 3: menuSituaciones();       break;
-                case 4: menuVacaciones();        break;
-                case 5: menuBienestar();         break;
-                case 6: menuSeguridadYSalud();   break;
+                case 1: menuPersonas();       break;
+                case 2: menuContratos();      break;
+                case 3: menuSituaciones();    break;
+                case 4: menuVacaciones();     break;
+                case 5: menuBienestar();      break;
+                case 6: menuSeguridadYSalud();break;
             }
         } while (opcion != 0);
         System.out.println("Programa finalizado.");
+    }
+
+    // CAMBIO 1: pantalla de bienvenida
+    public static void mostrarBienvenida() {
+        System.out.println("==============================================");
+        System.out.println("     SISTEMA DE GESTION DE TALENTO HUMANO");
+        System.out.println("       Gobernacion - Modulo de Personal    ");
+        System.out.println("==============================================");
+        System.out.println("       Bienvenido al sistema de gestion");
+        System.out.println("          Fecha: " + LocalDate.now());
+        System.out.println("==============================================");
+        System.out.print("\nPresione ENTER para continuar...");
+        sc.nextLine();
     }
 
     // ================================================================
     // METODOS DE LECTURA
     // ================================================================
 
+    // CAMBIOS 1 y 2: encabezado "Menu principal" + nombres cortos de opciones
     public static int leerOpcionMenuPrincipal() {
         while (true) {
-            System.out.println("\n¿Que deseas hacer?");
-            System.out.println("1) Operaciones de las personas");
-            System.out.println("2) Operaciones de los contratos");
+            System.out.println("\nMenu principal");
+            System.out.println();
+            System.out.println("¿Que deseas hacer?");
+            System.out.println();
+            System.out.println("1) Personas");
+            System.out.println("2) Contratos");
             System.out.println("3) Situaciones administrativas");
             System.out.println("4) Control de vacaciones");
             System.out.println("5) Plan de bienestar e incentivos");
@@ -211,16 +228,19 @@ public class main {
         }
     }
 
+    // CAMBIO 9: leerTipoSituacion ahora acepta 0 para cancelar → retorna -1
     public static int leerTipoSituacion() {
         while (true) {
             System.out.println("\nSeleccione el tipo de situacion administrativa:");
             for (int i = 0; i < SituacionAdministrativa.TIPOS.length; i++) {
                 System.out.println((i + 1) + ") " + SituacionAdministrativa.TIPOS[i]);
             }
+            System.out.println("0) Volver");
             System.out.print("Opcion: ");
             try {
                 int valor = sc.nextInt();
                 sc.nextLine();
+                if (valor == 0) return -1;
                 if (valor < 1 || valor > SituacionAdministrativa.TIPOS.length) {
                     System.out.println("Valor incorrecto");
                     continue;
@@ -277,6 +297,7 @@ public class main {
         }
     }
 
+    // CAMBIO 8: FORMATO_FECHA usa "d/M/yyyy" → acepta "1/5/2026" y "01/05/2026"
     public static LocalDate leerFecha(String pregunta) {
         while (true) {
             System.out.print(pregunta);
@@ -284,7 +305,7 @@ public class main {
                 String entrada = sc.nextLine().trim();
                 return LocalDate.parse(entrada, FORMATO_FECHA);
             } catch (DateTimeParseException e) {
-                System.out.println("Valor incorrecto. Use el formato DD/MM/AAAA");
+                System.out.println("Valor incorrecto. Use el formato DD/MM/AAAA (ej: 5/3/2025)");
             }
         }
     }
@@ -296,6 +317,21 @@ public class main {
                 int valor = sc.nextInt();
                 sc.nextLine();
                 if (valor <= 0) { System.out.println("Valor incorrecto"); continue; }
+                return valor;
+            } catch (InputMismatchException e) {
+                sc.nextLine();
+                System.out.println("Valor incorrecto");
+            }
+        }
+    }
+
+    public static int leerDiasIncapacidad(String pregunta) {
+        while (true) {
+            System.out.print(pregunta);
+            try {
+                int valor = sc.nextInt();
+                sc.nextLine();
+                if (valor < 0) { System.out.println("Valor incorrecto"); continue; }
                 return valor;
             } catch (InputMismatchException e) {
                 sc.nextLine();
@@ -352,6 +388,16 @@ public class main {
             }
             return valor;
         }
+    }
+
+    // CAMBIO 11: pide contraseña, retorna true si es correcta
+    public static boolean verificarClaveDirectivos() {
+        System.out.print("\nIngrese la contrasena de acceso (0 para cancelar): ");
+        String clave = sc.nextLine().trim();
+        if (clave.equals("0")) return false;
+        if (clave.equals(CLAVE_DIRECTIVOS)) return true;
+        System.out.println("Contrasena incorrecta. Acceso denegado.");
+        return false;
     }
 
     // ================================================================
@@ -426,13 +472,33 @@ public class main {
             switch (op) {
                 case 1: registrarPerfilSociodemografico(); break;
                 case 2: consultarPerfilSociodemografico(); break;
-                case 3: registrarEvaluacionMedica();   break;
-                case 4: consultarEvaluaciones();       break;
-                case 5: consultarCondicionesMedicas(); break;
-                case 6: registrarAccidente();          break;
-                case 7: verAccidentes();               break;
+                case 3: registrarEvaluacionMedica();       break;
+                case 4: consultarEvaluaciones();           break;
+                case 5:
+                    // CAMBIO 11: contraseña requerida para vista directivos
+                    if (verificarClaveDirectivos()) {
+                        consultarCondicionesMedicas();
+                    }
+                    break;
+                case 6: registrarAccidente(); break;
+                case 7: verAccidentes();      break;
             }
         } while (op != 0);
+    }
+
+    // ================================================================
+    // UTILIDADES
+    // ================================================================
+
+    // CAMBIO 10: ordena el ArrayList de personas alfabéticamente por nombre
+    public static ArrayList<person> personasOrdenadas() {
+        ArrayList<person> copia = new ArrayList<>(personas);
+        Collections.sort(copia, new Comparator<person>() {
+            public int compare(person a, person b) {
+                return a.name.compareToIgnoreCase(b.name);
+            }
+        });
+        return copia;
     }
 
     // ================================================================
@@ -440,15 +506,28 @@ public class main {
     // ================================================================
 
     public static void crearPersona() {
-        String nombre          = leerTexto("Nombre: ");
-        String cedula          = leerCedula("Cedula: ");
+        // CAMBIO 4: salto de línea antes de pedir datos
+        System.out.println();
+
+        String nombre = leerTexto("Nombre: ");
+        String cedula = leerCedula("Cedula: ");
+
+        // CAMBIO 6: no permitir cédulas duplicadas
+        if (buscarPorCedula(cedula) != null) {
+            System.out.println("Ya existe una persona con esa cedula. Operacion cancelada.");
+            return;
+        }
+
         String genero          = leerTexto("Genero: ");
         String estado          = leerTexto("Estado: ");
         String rh              = leerTexto("RH: ");
         String telefono        = leerTexto("Telefono: ");
+        // CAMBIO 3: campo email después de teléfono
+        String email           = leerTexto("Email: ");
         LocalDate fechaIngreso = leerFecha("Fecha de ingreso (DD/MM/AAAA): ");
-        personas.add(new person(nombre, cedula, genero, estado, rh, telefono, fechaIngreso));
-        System.out.println("\nPersona creada.");
+
+        personas.add(new person(nombre, cedula, genero, estado, rh, telefono, email, fechaIngreso));
+        System.out.println("\nPersona creada correctamente.");
     }
 
     public static person buscarPorCedula(String cedula) {
@@ -465,9 +544,12 @@ public class main {
         else System.out.println("\nPersona no encontrada.");
     }
 
+    // CAMBIO 10: imprime personas en orden alfabético
     public static void mostrarTodas() {
         if (personas.isEmpty()) { System.out.println("\nNo hay personas registradas."); return; }
-        for (person p : personas) System.out.println(p);
+        ArrayList<person> ordenadas = personasOrdenadas();
+        System.out.println("\n--- Servidores (orden alfabetico) ---");
+        for (person p : ordenadas) System.out.println(p);
     }
 
     // ================================================================
@@ -475,7 +557,21 @@ public class main {
     // ================================================================
 
     public static void crearContrato() {
-        int id        = leerIdContrato("ID del contrato: ");
+        // CAMBIO 5: no permitir IDs de contrato duplicados
+        int id;
+        while (true) {
+            id = leerIdContrato("ID del contrato: ");
+            boolean existe = false;
+            for (contrato c : contratos) {
+                if (c.id == id) { existe = true; break; }
+            }
+            if (existe) {
+                System.out.println("Ya hay un contrato con este ID, ingrese otro valido.");
+            } else {
+                break;
+            }
+        }
+
         String cedula = leerCedula("Cedula de la persona: ");
         person p = buscarPorCedula(cedula);
         if (p == null) { System.out.println("\nLa persona no existe."); return; }
@@ -517,19 +613,26 @@ public class main {
     // ================================================================
 
     public static void registrarSituacion() {
+        // CAMBIO 7: "0 para cancelar" ya está en leerCedulaExistente
         String cedula = leerCedulaExistente("Cedula del servidor");
         if (cedula == null) { System.out.println("Operacion cancelada."); return; }
 
+        // CAMBIO 9: leerTipoSituacion retorna -1 si el usuario elige 0 (Volver)
         int indiceTipo = leerTipoSituacion();
-        String tipo    = SituacionAdministrativa.TIPOS[indiceTipo];
-        String acto    = leerTexto("Acto administrativo (resolucion/numero): ");
+        if (indiceTipo == -1) { System.out.println("Operacion cancelada."); return; }
+
+        String tipo = SituacionAdministrativa.TIPOS[indiceTipo];
+        // CAMBIO 7: hint "0 para cancelar" en acto administrativo
+        String acto = leerTexto("Acto administrativo (resolucion/numero) [0 para cancelar]: ");
+        if (acto.equals("0")) { System.out.println("Operacion cancelada."); return; }
 
         LocalDate inicio;
         LocalDate fin;
 
         while (true) {
-            inicio = leerFecha("Fecha de inicio (DD/MM/AAAA): ");
-            fin    = leerFecha("Fecha de fin    (DD/MM/AAAA): ");
+            // CAMBIO 7: hint "0 para cancelar" en fechas
+            inicio = leerFecha("Fecha de inicio (DD/MM/AAAA) [0 para cancelar]: ");
+            fin    = leerFecha("Fecha de fin    (DD/MM/AAAA) [0 para cancelar]: ");
 
             if (inicio.isAfter(fin)) {
                 System.out.println("La fecha de inicio no puede ser posterior a la fecha de fin.");
@@ -665,6 +768,7 @@ public class main {
         System.out.println("========================================");
     }
 
+    // CAMBIO 10: reporteAlertas usa personasOrdenadas()
     public static void reporteAlertas() {
         if (personas.isEmpty()) { System.out.println("\nNo hay servidores registrados."); return; }
 
@@ -673,10 +777,12 @@ public class main {
         System.out.println("  Fecha: " + LocalDate.now());
         System.out.println("========================================");
 
+        ArrayList<person> ordenadas = personasOrdenadas();
+
         System.out.println("\n  [!] SERVIDORES QUE ADEUDAN MAS DE UN PERIODO:");
         System.out.println("  ----------------------------------------");
         boolean hayDeudores = false;
-        for (person p : personas) {
+        for (person p : ordenadas) {
             int pendientes = calcularPeriodosAcumulados(p) - calcularPeriodosDisfrutados(p.getDocument_id());
             if (pendientes > 1) {
                 System.out.println("  Servidor  : " + p.name + " | Cedula: " + p.getDocument_id());
@@ -690,7 +796,7 @@ public class main {
         System.out.println("\n  [>] SERVIDORES QUE DEBEN SALIR A VACACIONES (periodo actual):");
         System.out.println("  ----------------------------------------");
         boolean haySalida = false;
-        for (person p : personas) {
+        for (person p : ordenadas) {
             int pendientes = calcularPeriodosAcumulados(p) - calcularPeriodosDisfrutados(p.getDocument_id());
             if (pendientes >= 1) {
                 System.out.println("  Servidor  : " + p.name + " | Cedula: " + p.getDocument_id());
@@ -794,33 +900,24 @@ public class main {
     // OPERACIONES RF-05 - SEGURIDAD Y SALUD EN EL TRABAJO
     // ================================================================
 
-    // Registra una evaluacion medica ocupacional para un servidor
     public static void registrarEvaluacionMedica() {
         String cedula = leerCedulaExistente("Cedula del servidor");
         if (cedula == null) { System.out.println("Operacion cancelada."); return; }
 
-        LocalDate fecha   = leerFecha("Fecha de evaluacion (DD/MM/AAAA): ");
-        int indice        = leerConceptoMedico();
-        String concepto   = CONCEPTOS_MEDICOS[indice];
+        LocalDate fecha      = leerFecha("Fecha de evaluacion (DD/MM/AAAA): ");
+        int indice           = leerConceptoMedico();
+        String concepto      = CONCEPTOS_MEDICOS[indice];
         String observaciones = leerTexto("Observaciones: ");
-  
-        String tipoExamen = leerTexto("Tipo de examen: ");
-
-        System.out.print("Peso (kg): ");
-        String peso = sc.nextLine();
-    
-        System.out.print("Altura (m): ");
-        String altura = sc.nextLine();
-
+        String tipoExamen    = leerTexto("Tipo de examen: ");
+        String peso          = leerTexto("Peso (kg): ");
+        String altura        = leerTexto("Altura (m): ");
         String restricciones = leerTexto("Restricciones: ");
+        String medico        = leerTexto("Medico evaluador: ");
 
-        String medicoEvaluador = leerTexto("Medico evaluador: ");
-        
-        evaluaciones.add(new EvaluacionMedica(cedula, fecha, concepto, observaciones, tipoExamen, peso, altura, restricciones, medicoEvaluador));
+        evaluaciones.add(new EvaluacionMedica(cedula, fecha, concepto, observaciones, tipoExamen, peso, altura, restricciones, medico));
         System.out.println("\nEvaluacion medica registrada correctamente.");
     }
 
-    // Muestra el historial de evaluaciones medicas de un servidor
     public static void consultarEvaluaciones() {
         String cedula = leerCedulaExistente("Cedula del servidor");
         if (cedula == null) { System.out.println("Operacion cancelada."); return; }
@@ -843,7 +940,7 @@ public class main {
         System.out.println("========================================");
     }
 
-    // Vista para directivos: muestra condicion medica actual de toda la planta
+    // CAMBIO 10 y 11: ordena por nombre; acceso protegido con contraseña en menuSeguridadYSalud
     public static void consultarCondicionesMedicas() {
         if (personas.isEmpty()) { System.out.println("\nNo hay servidores registrados."); return; }
 
@@ -853,8 +950,9 @@ public class main {
         System.out.println("  Fecha consulta: " + LocalDate.now());
         System.out.println("========================================");
 
-        for (person p : personas) {
-            // Buscar la evaluacion mas reciente del servidor
+        // CAMBIO 10: iterar en orden alfabético
+        ArrayList<person> ordenadas = personasOrdenadas();
+        for (person p : ordenadas) {
             EvaluacionMedica ultima = null;
             for (EvaluacionMedica e : evaluaciones) {
                 if (e.cedulaServidor.equals(p.getDocument_id())) {
@@ -863,12 +961,11 @@ public class main {
                     }
                 }
             }
-
             System.out.println("\n  Servidor: " + p.name + " | Cedula: " + p.getDocument_id());
             if (ultima != null) {
-                System.out.println("  Ultimo concepto   : " + ultima.concepto);
-                System.out.println("  Fecha evaluacion  : " + ultima.fechaEvaluacion);
-                System.out.println("  Observaciones     : " + ultima.observaciones);
+                System.out.println("  Ultimo concepto  : " + ultima.concepto);
+                System.out.println("  Fecha evaluacion : " + ultima.fechaEvaluacion);
+                System.out.println("  Observaciones    : " + ultima.observaciones);
             } else {
                 System.out.println("  Sin evaluacion medica registrada.");
             }
@@ -877,34 +974,24 @@ public class main {
         System.out.println("========================================");
     }
 
-    // Registra un accidente o incidente laboral
     public static void registrarAccidente() {
         String cedula = leerCedulaExistente("Cedula del servidor");
         if (cedula == null) { System.out.println("Operacion cancelada."); return; }
 
-        LocalDate fecha    = leerFecha("Fecha del accidente (DD/MM/AAAA): ");
-        String tipo        = leerTexto("Tipo (Accidente / Incidente): ");
-        String descripcion = leerTexto("Descripcion: ");
-
-        String lugar = leerTexto("Lugar del accidente: ");
-
-String gravedad = leerTexto("Gravedad: ");
-
-String testigos = leerTexto("Testigos: ");
-
-System.out.print("Dias de incapacidad: ");
-int diasIncapacidad = sc.nextInt();
-sc.nextLine();
-
-String atencionMedica = leerTexto("Recibio atencion medica: ");
-
-String causa = leerTexto("Causa del accidente: ");
+        LocalDate fecha       = leerFecha("Fecha del accidente (DD/MM/AAAA): ");
+        String tipo           = leerTexto("Tipo (Accidente / Incidente): ");
+        String descripcion    = leerTexto("Descripcion: ");
+        String lugar          = leerTexto("Lugar del accidente: ");
+        String gravedad       = leerTexto("Gravedad: ");
+        String testigos       = leerTexto("Testigos: ");
+        int diasIncapacidad   = leerDiasIncapacidad("Dias de incapacidad: ");
+        String atencionMedica = leerTexto("Recibio atencion medica (Si/No): ");
+        String causa          = leerTexto("Causa del accidente: ");
 
         accidentes.add(new AccidenteLaboral(cedula, fecha, tipo, descripcion, lugar, gravedad, testigos, diasIncapacidad, atencionMedica, causa));
         System.out.println("\nAccidente/incidente registrado correctamente.");
     }
 
-    // Muestra el historial de accidentes laborales de un servidor
     public static void verAccidentes() {
         String cedula = leerCedulaExistente("Cedula del servidor");
         if (cedula == null) { System.out.println("Operacion cancelada."); return; }
@@ -925,129 +1012,71 @@ String causa = leerTexto("Causa del accidente: ");
         }
         if (!hay) System.out.println("No existen accidentes registrados para este servidor.");
         System.out.println("========================================");
-        
     }
 
     public static void registrarPerfilSociodemografico() {
+        String cedula = leerCedulaExistente("Cedula del servidor");
+        if (cedula == null) { System.out.println("Operacion cancelada."); return; }
 
-    String cedula = leerCedulaExistente("Cedula del servidor");
-
-    if (cedula == null) {
-        System.out.println("Operacion cancelada.");
-        return;
-    }
-
-    int edad;
-
-    while (true) {
-
-        try {
-
-            System.out.print("Edad: ");
-            edad = sc.nextInt();
-            sc.nextLine();
-
-            if (edad <= 0) {
-                System.out.println("Edad invalida.");
-                continue;
+        int edad;
+        while (true) {
+            try {
+                System.out.print("Edad: ");
+                edad = sc.nextInt();
+                sc.nextLine();
+                if (edad <= 0) { System.out.println("Edad invalida."); continue; }
+                break;
+            } catch (InputMismatchException e) {
+                sc.nextLine();
+                System.out.println("Valor incorrecto.");
             }
-
-            break;
-
-        } catch (InputMismatchException e) {
-
-            sc.nextLine();
-            System.out.println("Valor incorrecto.");
         }
-    }
 
-    String direccion = leerTexto("Direccion: ");
-    String estadoCivil = leerTexto("Estado civil: ");
-    String nivelEducativo = leerTexto("Nivel educativo: ");
+        String direccion       = leerTexto("Direccion: ");
+        String estadoCivil     = leerTexto("Estado civil: ");
+        String nivelEducativo  = leerTexto("Nivel educativo: ");
 
-    int estrato;
-
-    while (true) {
-
-        try {
-
-            System.out.print("Estrato: ");
-            estrato = sc.nextInt();
-            sc.nextLine();
-
-            if (estrato < 1 || estrato > 6) {
-
-                System.out.println("Estrato invalido.");
-                continue;
+        int estrato;
+        while (true) {
+            try {
+                System.out.print("Estrato: ");
+                estrato = sc.nextInt();
+                sc.nextLine();
+                if (estrato < 1 || estrato > 6) { System.out.println("Estrato invalido."); continue; }
+                break;
+            } catch (InputMismatchException e) {
+                sc.nextLine();
+                System.out.println("Valor incorrecto.");
             }
-
-            break;
-
-        } catch (InputMismatchException e) {
-
-            sc.nextLine();
-            System.out.println("Valor incorrecto.");
         }
-    }
 
-    String eps = leerTexto("EPS: ");
-    String cargo = leerTexto("Cargo: ");
+        String eps   = leerTexto("EPS: ");
+        String cargo = leerTexto("Cargo: ");
 
+        String nombreTutor   = "";
+        String telefonoTutor = "";
 
-    String nombreTutor = ("");
-    String telefonoTutor = ("");
-
-if (edad < 18) {
-
-    System.out.println("\nEl servidor es menor de edad.");
-
-    nombreTutor = leerTexto("Nombre del tutor: ");
-    telefonoTutor = leerTexto("Telefono del tutor: ");
-}
-
-    perfiles.add(
-
-        new PerfilSociodemografico(
-            cedula,
-            edad,
-            direccion,
-            estadoCivil,
-            nivelEducativo,
-            estrato,
-            eps,
-            cargo,
-            nombreTutor,
-            telefonoTutor
-        )
-    );
-
-    System.out.println("\nPerfil sociodemografico registrado correctamente.");
-}
-
-public static void consultarPerfilSociodemografico() {
-
-    String cedula = leerCedulaExistente("Cedula del servidor");
-
-    if (cedula == null) {
-
-        System.out.println("Operacion cancelada.");
-        return;
-    }
-
-    boolean encontrado = false;
-
-    for (PerfilSociodemografico p : perfiles) {
-
-        if (p.cedulaServidor.equals(cedula)) {
-
-            p.mostrarInfo();
-            encontrado = true;
+        if (edad < 18) {
+            System.out.println("\nEl servidor es menor de edad.");
+            nombreTutor   = leerTexto("Nombre del tutor: ");
+            telefonoTutor = leerTexto("Telefono del tutor: ");
         }
+
+        perfiles.add(new PerfilSociodemografico(cedula, edad, direccion, estadoCivil, nivelEducativo, estrato, eps, cargo, nombreTutor, telefonoTutor));
+        System.out.println("\nPerfil sociodemografico registrado correctamente.");
     }
 
-    if (!encontrado) {
+    public static void consultarPerfilSociodemografico() {
+        String cedula = leerCedulaExistente("Cedula del servidor");
+        if (cedula == null) { System.out.println("Operacion cancelada."); return; }
 
-        System.out.println("No existe perfil sociodemografico.");
+        boolean encontrado = false;
+        for (PerfilSociodemografico p : perfiles) {
+            if (p.cedulaServidor.equals(cedula)) {
+                p.mostrarInfo();
+                encontrado = true;
+            }
+        }
+        if (!encontrado) System.out.println("No existe perfil sociodemografico para este servidor.");
     }
-}
 }

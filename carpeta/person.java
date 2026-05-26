@@ -10,7 +10,8 @@ public class person {
     String state;
     String rh;
     String phone;
-    LocalDate fechaIngreso; // necesaria para calcular períodos de vacaciones (RF-03)
+    String email;
+    LocalDate fechaIngreso;
 
     public person(
         String nombre,
@@ -19,6 +20,7 @@ public class person {
         String state,
         String rh,
         String phone,
+        String email,
         LocalDate fechaIngreso
     ) {
         this.name         = nombre;
@@ -27,6 +29,7 @@ public class person {
         this.state        = state;
         this.rh           = rh;
         this.phone        = phone;
+        this.email        = email;
         this.fechaIngreso = fechaIngreso;
     }
 
@@ -36,12 +39,13 @@ public class person {
 
     @Override
     public String toString() {
-        return "\nNombre: " + name +
-               "\nCedula: " + document_id +
-               "\nGenero: " + gender +
-               "\nEstado: " + state +
-               "\nRH: " + rh +
-               "\nTelefono: " + phone +
-               "\nFecha ingreso: " + fechaIngreso;
+        return "\nNombre: "       + name        +
+               "\nCedula: "       + document_id +
+               "\nGenero: "       + gender      +
+               "\nEstado: "       + state       +
+               "\nRH: "           + rh          +
+               "\nTelefono: "     + phone       +
+               "\nEmail: "        + email       +
+               "\nFecha ingreso: "+ fechaIngreso;
     }
 }
