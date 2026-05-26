@@ -19,28 +19,28 @@ public class Seed {
         // =====================================================
 
         personas.add(new person(
-            "Juan Perez",
-            "1001",
+            "Juan Felipe Perez",
+            "1001234567",
             "Masculino",
             "Activo",
             "O+",
-            "3001111111",
+            "3201111111",
             LocalDate.of(2020, 5, 10)
         ));
 
         personas.add(new person(
-            "Maria Gomez",
-            "1002",
+            "Maria Paz Gomez",
+            "1002345678",
             "Femenino",
             "Activo",
             "A+",
-            "3002222222",
+            "3112222222",
             LocalDate.of(2019, 3, 15)
         ));
 
         personas.add(new person(
-            "Carlos Ramirez",
-            "1003",
+            "Carlos Andres Ramirez",
+            "1003456789",
             "Masculino",
             "Activo",
             "B+",
@@ -49,72 +49,72 @@ public class Seed {
         ));
 
         personas.add(new person(
-            "Laura Torres",
-            "1004",
+            "Laura Alejandra Torres",
+            "1004567890",
             "Femenino",
             "Activo",
             "AB+",
-            "3004444444",
+            "3214444444",
             LocalDate.of(2021, 1, 8)
         ));
 
         personas.add(new person(
-            "Andres Lopez",
-            "1005",
+            "Andres Felipe Lopez",
+            "1005678901",
             "Masculino",
             "Activo",
-            "O-",
-            "3005555555",
+            "O+",
+            "3145555555",
             LocalDate.of(2017, 9, 12)
         ));
 
         personas.add(new person(
-            "Sofia Martinez",
-            "1006",
+            "Angela Sofia Martinez",
+            "1006789012",
             "Femenino",
             "Activo",
-            "A-",
-            "3006666666",
+            "A+",
+            "3206666666",
             LocalDate.of(2022, 4, 18)
         ));
 
         personas.add(new person(
-            "Daniel Castro",
-            "1007",
+            "Daniel Alejandro Castro",
+            "1007890123",
             "Masculino",
             "Activo",
             "B-",
-            "3007777777",
+            "3157777777",
             LocalDate.of(2016, 11, 3)
         ));
 
         personas.add(new person(
-            "Valentina Rojas",
-            "1008",
+            "Maria Valentina Rojas",
+            "1008901234",
             "Femenino",
             "Activo",
             "O+",
-            "3008888888",
+            "3178888888",
             LocalDate.of(2020, 8, 25)
         ));
 
         personas.add(new person(
-            "Miguel Herrera",
-            "1009",
+            "Miguel Angel Herrera",
+            "1009901234",
             "Masculino",
             "Activo",
             "AB-",
-            "3009999999",
+            "3239999999",
             LocalDate.of(2015, 2, 28)
         ));
 
         personas.add(new person(
-            "Camila Diaz",
-            "1010",
+            "Maria Camila Diaz",
+            "1010111111",
             "Femenino",
             "Activo",
             "A+",
-            "3010000000",
+            "3184444444",
             LocalDate.of(2023, 6, 5)
         ));
 
@@ -122,15 +122,15 @@ public class Seed {
         // CONTRATOS
         // =====================================================
 
-        contratos.add(new contrato(1, "1001", "Planta", 3500000, "10/05/2020"));
-        contratos.add(new contrato(2, "1002", "Temporal", 2800000, "15/03/2019"));
+        contratos.add(new contrato(1, "1001234567", "Planta", 3500000, "10/05/2020"));
+        contratos.add(new contrato(2, "1002345678", "Temporal", 2800000, "15/03/2019"));
 
         // =====================================================
         // SITUACIONES
         // =====================================================
 
         situaciones.add(new SituacionAdministrativa(
-            "1001",
+            "1001234567",
             "Vacaciones",
             LocalDate.of(2026, 1, 10),
             LocalDate.of(2026, 1, 20),
@@ -143,11 +143,11 @@ public class Seed {
 
         incentivos.add(new Incentivo(
             1,
-            "1001",
+            "1001234567",
             "Reconocimiento",
             LocalDate.of(2026, 3, 10),
             2026,
-            "Excelente desempeÃ±o",
+            "Excelente desempeno en el trabajo",
             "ACT-001"
         ));
 
@@ -156,22 +156,33 @@ public class Seed {
         // =====================================================
 
         evaluaciones.add(new EvaluacionMedica(
-            "1001",
-            LocalDate.of(2026, 4, 12),
-            "Apto",
-            "Sin restricciones"
-        ));
+        "1001234567",
+        LocalDate.of(2026, 4, 12),
+        "Apto",
+        "Sin restricciones",
+        "Ingreso",
+        "70.5",
+        "1.75",
+        "Ninguna",
+        "Dra. Carolina Ruiz"
+));
 
         // =====================================================
         // ACCIDENTES
         // =====================================================
 
         accidentes.add(new AccidenteLaboral(
-            "1003",
-            LocalDate.of(2026, 5, 1),
-            "Accidente",
-            "Caida en escaleras"
-        ));
+    "1003456789",
+    LocalDate.of(2026, 5, 1),
+    "Accidente",
+    "Caida en escaleras",
+    "Bloque administrativo",
+    "Moderado",
+    "Juan Perez",
+    5,
+    "Si",
+    "Piso mojado"
+));
 
     }
 }

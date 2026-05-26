@@ -16,6 +16,7 @@ public class main {
     static ArrayList<Incentivo>               incentivos   = new ArrayList<>();
     static ArrayList<EvaluacionMedica>        evaluaciones = new ArrayList<>();
     static ArrayList<AccidenteLaboral>        accidentes   = new ArrayList<>();
+    static ArrayList<PerfilSociodemografico> perfiles      = new ArrayList<>();
 
     // ── Tipos de incentivo (RF-04) ───────────────────────────────────
     static final String[] TIPOS_INCENTIVO = {
@@ -190,11 +191,13 @@ public class main {
     public static int leerOpcionMenuSeguridadYSalud() {
         while (true) {
             System.out.println("\n-----MODULO SEGURIDAD Y SALUD EN EL TRABAJO-----");
-            System.out.println("1) Registrar evaluacion medica ocupacional");
-            System.out.println("2) Consultar evaluaciones medicas de un servidor");
-            System.out.println("3) Consultar condiciones medicas (vista directivos)");
-            System.out.println("4) Registrar accidente o incidente laboral");
-            System.out.println("5) Ver accidentes laborales de un servidor");
+            System.out.println("1) Crear perfil sociodemografico");
+            System.out.println("2) Consultar perfil sociodemografico");
+            System.out.println("3) Registrar evaluacion medica ocupacional");
+            System.out.println("4) Consultar evaluaciones medicas de un servidor");
+            System.out.println("5) Consultar condiciones medicas (vista directivos)");
+            System.out.println("6) Registrar accidente o incidente laboral");
+            System.out.println("7) Ver accidentes laborales de un servidor");
             System.out.println("0) Volver al menu principal.");
             System.out.print("Opcion: ");
             try {
@@ -421,11 +424,13 @@ public class main {
         do {
             op = leerOpcionMenuSeguridadYSalud();
             switch (op) {
-                case 1: registrarEvaluacionMedica();   break;
-                case 2: consultarEvaluaciones();       break;
-                case 3: consultarCondicionesMedicas(); break;
-                case 4: registrarAccidente();          break;
-                case 5: verAccidentes();               break;
+                case 1: registrarPerfilSociodemografico(); break;
+                case 2: consultarPerfilSociodemografico(); break;
+                case 3: registrarEvaluacionMedica();   break;
+                case 4: consultarEvaluaciones();       break;
+                case 5: consultarCondicionesMedicas(); break;
+                case 6: registrarAccidente();          break;
+                case 7: verAccidentes();               break;
             }
         } while (op != 0);
     }
@@ -798,8 +803,20 @@ public class main {
         int indice        = leerConceptoMedico();
         String concepto   = CONCEPTOS_MEDICOS[indice];
         String observaciones = leerTexto("Observaciones: ");
+  
+        String tipoExamen = leerTexto("Tipo de examen: ");
 
-        evaluaciones.add(new EvaluacionMedica(cedula, fecha, concepto, observaciones));
+        System.out.print("Peso (kg): ");
+        String peso = sc.nextLine();
+    
+        System.out.print("Altura (m): ");
+        String altura = sc.nextLine();
+
+        String restricciones = leerTexto("Restricciones: ");
+
+        String medicoEvaluador = leerTexto("Medico evaluador: ");
+        
+        evaluaciones.add(new EvaluacionMedica(cedula, fecha, concepto, observaciones, tipoExamen, peso, altura, restricciones, medicoEvaluador));
         System.out.println("\nEvaluacion medica registrada correctamente.");
     }
 
@@ -869,7 +886,21 @@ public class main {
         String tipo        = leerTexto("Tipo (Accidente / Incidente): ");
         String descripcion = leerTexto("Descripcion: ");
 
-        accidentes.add(new AccidenteLaboral(cedula, fecha, tipo, descripcion));
+        String lugar = leerTexto("Lugar del accidente: ");
+
+String gravedad = leerTexto("Gravedad: ");
+
+String testigos = leerTexto("Testigos: ");
+
+System.out.print("Dias de incapacidad: ");
+int diasIncapacidad = sc.nextInt();
+sc.nextLine();
+
+String atencionMedica = leerTexto("Recibio atencion medica: ");
+
+String causa = leerTexto("Causa del accidente: ");
+
+        accidentes.add(new AccidenteLaboral(cedula, fecha, tipo, descripcion, lugar, gravedad, testigos, diasIncapacidad, atencionMedica, causa));
         System.out.println("\nAccidente/incidente registrado correctamente.");
     }
 
@@ -894,5 +925,129 @@ public class main {
         }
         if (!hay) System.out.println("No existen accidentes registrados para este servidor.");
         System.out.println("========================================");
+        
     }
+
+    public static void registrarPerfilSociodemografico() {
+
+    String cedula = leerCedulaExistente("Cedula del servidor");
+
+    if (cedula == null) {
+        System.out.println("Operacion cancelada.");
+        return;
+    }
+
+    int edad;
+
+    while (true) {
+
+        try {
+
+            System.out.print("Edad: ");
+            edad = sc.nextInt();
+            sc.nextLine();
+
+            if (edad <= 0) {
+                System.out.println("Edad invalida.");
+                continue;
+            }
+
+            break;
+
+        } catch (InputMismatchException e) {
+
+            sc.nextLine();
+            System.out.println("Valor incorrecto.");
+        }
+    }
+
+    String direccion = leerTexto("Direccion: ");
+    String estadoCivil = leerTexto("Estado civil: ");
+    String nivelEducativo = leerTexto("Nivel educativo: ");
+
+    int estrato;
+
+    while (true) {
+
+        try {
+
+            System.out.print("Estrato: ");
+            estrato = sc.nextInt();
+            sc.nextLine();
+
+            if (estrato < 1 || estrato > 6) {
+
+                System.out.println("Estrato invalido.");
+                continue;
+            }
+
+            break;
+
+        } catch (InputMismatchException e) {
+
+            sc.nextLine();
+            System.out.println("Valor incorrecto.");
+        }
+    }
+
+    String eps = leerTexto("EPS: ");
+    String cargo = leerTexto("Cargo: ");
+
+
+    String nombreTutor = ("");
+    String telefonoTutor = ("");
+
+if (edad < 18) {
+
+    System.out.println("\nEl servidor es menor de edad.");
+
+    nombreTutor = leerTexto("Nombre del tutor: ");
+    telefonoTutor = leerTexto("Telefono del tutor: ");
+}
+
+    perfiles.add(
+
+        new PerfilSociodemografico(
+            cedula,
+            edad,
+            direccion,
+            estadoCivil,
+            nivelEducativo,
+            estrato,
+            eps,
+            cargo,
+            nombreTutor,
+            telefonoTutor
+        )
+    );
+
+    System.out.println("\nPerfil sociodemografico registrado correctamente.");
+}
+
+public static void consultarPerfilSociodemografico() {
+
+    String cedula = leerCedulaExistente("Cedula del servidor");
+
+    if (cedula == null) {
+
+        System.out.println("Operacion cancelada.");
+        return;
+    }
+
+    boolean encontrado = false;
+
+    for (PerfilSociodemografico p : perfiles) {
+
+        if (p.cedulaServidor.equals(cedula)) {
+
+            p.mostrarInfo();
+            encontrado = true;
+        }
+    }
+
+    if (!encontrado) {
+
+        System.out.println("No existe perfil sociodemografico.");
+    }
+}
 }

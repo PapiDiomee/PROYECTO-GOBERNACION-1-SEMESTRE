@@ -36,12 +36,12 @@ public class person {
 
     @Override
     public String toString() {
-        return "Nombre: " + name +
-               ", Cedula: " + document_id +
-               ", Genero: " + gender +
-               ", Estado: " + state +
-               ", RH: " + rh +
-               ", Telefono: " + phone +
-               ", Fecha ingreso: " + fechaIngreso;
+        return "\nNombre: " + name +
+               "\nCedula: " + document_id +
+               "\nGenero: " + gender +
+               "\nEstado: " + state +
+               "\nRH: " + rh +
+               "\nTelefono: " + phone +
+               "\nFecha ingreso: " + fechaIngreso;
     }
 }
