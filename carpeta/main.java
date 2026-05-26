@@ -40,6 +40,16 @@ public class main {
     // ================================================================
 
     public static void main(String[] args) {
+
+    Seed.personasCreadas(
+    personas,
+    contratos,
+    situaciones,
+    incentivos,
+    evaluaciones,
+    accidentes
+      );
+      
         int opcion;
         do {
             opcion = leerOpcionMenuPrincipal();
