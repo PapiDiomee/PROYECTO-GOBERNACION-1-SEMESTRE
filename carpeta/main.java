@@ -9,16 +9,27 @@ import java.util.Scanner;
 
 public class main {
 
-    static ArrayList<person>                  personas    = new ArrayList<>();
-    static ArrayList<contrato>                contratos   = new ArrayList<>();
-    static ArrayList<SituacionAdministrativa> situaciones = new ArrayList<>();
-    static ArrayList<Incentivo>               incentivos  = new ArrayList<>();
+    // ── ArrayLists de datos ──────────────────────────────────────────
+    static ArrayList<person>                  personas     = new ArrayList<>();
+    static ArrayList<contrato>                contratos    = new ArrayList<>();
+    static ArrayList<SituacionAdministrativa> situaciones  = new ArrayList<>();
+    static ArrayList<Incentivo>               incentivos   = new ArrayList<>();
+    static ArrayList<EvaluacionMedica>        evaluaciones = new ArrayList<>();
+    static ArrayList<AccidenteLaboral>        accidentes   = new ArrayList<>();
 
+    // ── Tipos de incentivo (RF-04) ───────────────────────────────────
     static final String[] TIPOS_INCENTIVO = {
         "Cumpleanos (Celebra la Vida)",
         "Tiempo de servicio",
         "Reconocimiento",
         "Capacitacion"
+    };
+
+    // ── Tipos de concepto medico (RF-05) ────────────────────────────
+    static final String[] CONCEPTOS_MEDICOS = {
+        "Apto",
+        "Apto con restricciones",
+        "No apto"
     };
 
     static final Scanner           sc            = new Scanner(System.in);
@@ -33,11 +44,12 @@ public class main {
         do {
             opcion = leerOpcionMenuPrincipal();
             switch (opcion) {
-                case 1: menuPersonas();    break;
-                case 2: menuContratos();   break;
-                case 3: menuSituaciones(); break;
-                case 4: menuVacaciones();  break;
-                case 5: menuBienestar();   break;
+                case 1: menuPersonas();         break;
+                case 2: menuContratos();         break;
+                case 3: menuSituaciones();       break;
+                case 4: menuVacaciones();        break;
+                case 5: menuBienestar();         break;
+                case 6: menuSeguridadYSalud();   break;
             }
         } while (opcion != 0);
         System.out.println("Programa finalizado.");
@@ -55,6 +67,7 @@ public class main {
             System.out.println("3) Situaciones administrativas");
             System.out.println("4) Control de vacaciones");
             System.out.println("5) Plan de bienestar e incentivos");
+            System.out.println("6) Seguridad y salud en el trabajo");
             System.out.println("0) Salir");
             System.out.print("Opcion: ");
             try {
@@ -164,6 +177,27 @@ public class main {
         }
     }
 
+    public static int leerOpcionMenuSeguridadYSalud() {
+        while (true) {
+            System.out.println("\n-----MODULO SEGURIDAD Y SALUD EN EL TRABAJO-----");
+            System.out.println("1) Registrar evaluacion medica ocupacional");
+            System.out.println("2) Consultar evaluaciones medicas de un servidor");
+            System.out.println("3) Consultar condiciones medicas (vista directivos)");
+            System.out.println("4) Registrar accidente o incidente laboral");
+            System.out.println("5) Ver accidentes laborales de un servidor");
+            System.out.println("0) Volver al menu principal.");
+            System.out.print("Opcion: ");
+            try {
+                int valor = sc.nextInt();
+                sc.nextLine();
+                return valor;
+            } catch (InputMismatchException e) {
+                sc.nextLine();
+                System.out.println("Valor incorrecto");
+            }
+        }
+    }
+
     public static int leerTipoSituacion() {
         while (true) {
             System.out.println("\nSeleccione el tipo de situacion administrativa:");
@@ -197,6 +231,28 @@ public class main {
                 int valor = sc.nextInt();
                 sc.nextLine();
                 if (valor < 1 || valor > TIPOS_INCENTIVO.length) {
+                    System.out.println("Valor incorrecto");
+                    continue;
+                }
+                return valor - 1;
+            } catch (InputMismatchException e) {
+                sc.nextLine();
+                System.out.println("Valor incorrecto");
+            }
+        }
+    }
+
+    public static int leerConceptoMedico() {
+        while (true) {
+            System.out.println("\nConcepto medico:");
+            for (int i = 0; i < CONCEPTOS_MEDICOS.length; i++) {
+                System.out.println((i + 1) + ") " + CONCEPTOS_MEDICOS[i]);
+            }
+            System.out.print("Opcion: ");
+            try {
+                int valor = sc.nextInt();
+                sc.nextLine();
+                if (valor < 1 || valor > CONCEPTOS_MEDICOS.length) {
                     System.out.println("Valor incorrecto");
                     continue;
                 }
@@ -350,17 +406,31 @@ public class main {
         } while (op != 0);
     }
 
+    public static void menuSeguridadYSalud() {
+        int op;
+        do {
+            op = leerOpcionMenuSeguridadYSalud();
+            switch (op) {
+                case 1: registrarEvaluacionMedica();   break;
+                case 2: consultarEvaluaciones();       break;
+                case 3: consultarCondicionesMedicas(); break;
+                case 4: registrarAccidente();          break;
+                case 5: verAccidentes();               break;
+            }
+        } while (op != 0);
+    }
+
     // ================================================================
     // OPERACIONES DE PERSONAS
     // ================================================================
 
     public static void crearPersona() {
-        String nombre         = leerTexto("Nombre: ");
-        String cedula         = leerCedula("Cedula: ");
-        String genero         = leerTexto("Genero: ");
-        String estado         = leerTexto("Estado: ");
-        String rh             = leerTexto("RH: ");
-        String telefono       = leerTexto("Telefono: ");
+        String nombre          = leerTexto("Nombre: ");
+        String cedula          = leerCedula("Cedula: ");
+        String genero          = leerTexto("Genero: ");
+        String estado          = leerTexto("Estado: ");
+        String rh              = leerTexto("RH: ");
+        String telefono        = leerTexto("Telefono: ");
         LocalDate fechaIngreso = leerFecha("Fecha de ingreso (DD/MM/AAAA): ");
         personas.add(new person(nombre, cedula, genero, estado, rh, telefono, fechaIngreso));
         System.out.println("\nPersona creada.");
@@ -511,7 +581,7 @@ public class main {
     // ================================================================
 
     public static int calcularPeriodosAcumulados(person p) {
-        LocalDate hoy  = LocalDate.now();
+        LocalDate hoy = LocalDate.now();
         int anios = hoy.getYear() - p.fechaIngreso.getYear();
         if (hoy.getMonthValue() < p.fechaIngreso.getMonthValue() ||
            (hoy.getMonthValue() == p.fechaIngreso.getMonthValue() &&
@@ -627,10 +697,10 @@ public class main {
         if (cedula == null) { System.out.println("Operacion cancelada."); return; }
 
         while (true) {
-            int    indiceTipo = leerTipoIncentivo();
-            String tipo       = TIPOS_INCENTIVO[indiceTipo];
-            LocalDate fecha   = leerFecha("Fecha de otorgamiento (DD/MM/AAAA): ");
-            int    year       = fecha.getYear();
+            int       indiceTipo = leerTipoIncentivo();
+            String    tipo       = TIPOS_INCENTIVO[indiceTipo];
+            LocalDate fecha      = leerFecha("Fecha de otorgamiento (DD/MM/AAAA): ");
+            int       year       = fecha.getYear();
 
             boolean duplicado = false;
             for (Incentivo inv : incentivos) {
@@ -681,7 +751,7 @@ public class main {
         String cedula = leerCedulaExistente("Cedula del servidor");
         if (cedula == null) { System.out.println("Operacion cancelada."); return; }
 
-        person p       = buscarPorCedula(cedula);
+        person p        = buscarPorCedula(cedula);
         int currentYear = LocalDate.now().getYear();
 
         System.out.println("\n==========================================");
@@ -703,5 +773,116 @@ public class main {
             System.out.printf("  %-34s: %s%n", tipo, estado);
         }
         System.out.println("==========================================");
+    }
+
+    // ================================================================
+    // OPERACIONES RF-05 - SEGURIDAD Y SALUD EN EL TRABAJO
+    // ================================================================
+
+    // Registra una evaluacion medica ocupacional para un servidor
+    public static void registrarEvaluacionMedica() {
+        String cedula = leerCedulaExistente("Cedula del servidor");
+        if (cedula == null) { System.out.println("Operacion cancelada."); return; }
+
+        LocalDate fecha   = leerFecha("Fecha de evaluacion (DD/MM/AAAA): ");
+        int indice        = leerConceptoMedico();
+        String concepto   = CONCEPTOS_MEDICOS[indice];
+        String observaciones = leerTexto("Observaciones: ");
+
+        evaluaciones.add(new EvaluacionMedica(cedula, fecha, concepto, observaciones));
+        System.out.println("\nEvaluacion medica registrada correctamente.");
+    }
+
+    // Muestra el historial de evaluaciones medicas de un servidor
+    public static void consultarEvaluaciones() {
+        String cedula = leerCedulaExistente("Cedula del servidor");
+        if (cedula == null) { System.out.println("Operacion cancelada."); return; }
+
+        person p = buscarPorCedula(cedula);
+        System.out.println("\n========================================");
+        System.out.println("  EVALUACIONES MEDICAS OCUPACIONALES");
+        System.out.println("  Servidor: " + p.name + " | Cedula: " + cedula);
+        System.out.println("========================================");
+
+        boolean hay = false;
+        for (EvaluacionMedica e : evaluaciones) {
+            if (e.cedulaServidor.equals(cedula)) {
+                e.mostrarInfo();
+                System.out.println("  ........");
+                hay = true;
+            }
+        }
+        if (!hay) System.out.println("No existen evaluaciones medicas para este servidor.");
+        System.out.println("========================================");
+    }
+
+    // Vista para directivos: muestra condicion medica actual de toda la planta
+    public static void consultarCondicionesMedicas() {
+        if (personas.isEmpty()) { System.out.println("\nNo hay servidores registrados."); return; }
+
+        System.out.println("\n========================================");
+        System.out.println("  CONDICIONES MEDICAS - PLANTA DE PERSONAL");
+        System.out.println("  (Vista autorizada para directivos)");
+        System.out.println("  Fecha consulta: " + LocalDate.now());
+        System.out.println("========================================");
+
+        for (person p : personas) {
+            // Buscar la evaluacion mas reciente del servidor
+            EvaluacionMedica ultima = null;
+            for (EvaluacionMedica e : evaluaciones) {
+                if (e.cedulaServidor.equals(p.getDocument_id())) {
+                    if (ultima == null || e.fechaEvaluacion.isAfter(ultima.fechaEvaluacion)) {
+                        ultima = e;
+                    }
+                }
+            }
+
+            System.out.println("\n  Servidor: " + p.name + " | Cedula: " + p.getDocument_id());
+            if (ultima != null) {
+                System.out.println("  Ultimo concepto   : " + ultima.concepto);
+                System.out.println("  Fecha evaluacion  : " + ultima.fechaEvaluacion);
+                System.out.println("  Observaciones     : " + ultima.observaciones);
+            } else {
+                System.out.println("  Sin evaluacion medica registrada.");
+            }
+            System.out.println("  ........");
+        }
+        System.out.println("========================================");
+    }
+
+    // Registra un accidente o incidente laboral
+    public static void registrarAccidente() {
+        String cedula = leerCedulaExistente("Cedula del servidor");
+        if (cedula == null) { System.out.println("Operacion cancelada."); return; }
+
+        LocalDate fecha    = leerFecha("Fecha del accidente (DD/MM/AAAA): ");
+        String tipo        = leerTexto("Tipo (Accidente / Incidente): ");
+        String descripcion = leerTexto("Descripcion: ");
+
+        accidentes.add(new AccidenteLaboral(cedula, fecha, tipo, descripcion));
+        System.out.println("\nAccidente/incidente registrado correctamente.");
+    }
+
+    // Muestra el historial de accidentes laborales de un servidor
+    public static void verAccidentes() {
+        String cedula = leerCedulaExistente("Cedula del servidor");
+        if (cedula == null) { System.out.println("Operacion cancelada."); return; }
+
+        person p = buscarPorCedula(cedula);
+        System.out.println("\n========================================");
+        System.out.println("  ACCIDENTES E INCIDENTES LABORALES");
+        System.out.println("  Servidor: " + p.name + " | Cedula: " + cedula);
+        System.out.println("========================================");
+
+        boolean hay = false;
+        for (AccidenteLaboral a : accidentes) {
+            if (a.cedulaServidor.equals(cedula)) {
+                a.mostrarInfo();
+                System.out.println("  ........");
+                hay = true;
+            }
+        }
+        if (!hay) System.out.println("No existen accidentes registrados para este servidor.");
+        System.out.println("========================================");
     }
 }
