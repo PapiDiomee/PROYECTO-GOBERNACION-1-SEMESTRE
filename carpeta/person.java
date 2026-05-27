@@ -21,7 +21,7 @@ public class person {
         String rh,
         String phone,
         String email,
-        LocalDate fechaIngreso
+        LocalDate fechaIngreso//quitar
     ) {
         this.name         = nombre;
         this.document_id  = cedula;

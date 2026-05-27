@@ -14,10 +14,7 @@ public class Seed {
         ArrayList<AccidenteLaboral>        accidentes
     ) {
 
-        // =====================================================
-        // PERSONAS
-        // =====================================================
-
+        //PERSONAS//
         personas.add(new person("Juan Felipe Perez",       "1001234567", "Masculino", "Activo", "O+",  "3201111111", "jfperez@gob.co",    LocalDate.of(2020, 5, 10)));
         personas.add(new person("Maria Paz Gomez",         "1002345678", "Femenino",  "Activo", "A+",  "3112222222", "mpgomez@gob.co",    LocalDate.of(2019, 3, 15)));
         personas.add(new person("Carlos Andres Ramirez",   "1003456789", "Masculino", "Activo", "B+",  "3003333333", "caramirez@gob.co",  LocalDate.of(2018, 7, 20)));
@@ -29,46 +26,31 @@ public class Seed {
         personas.add(new person("Miguel Angel Herrera",    "1009901234", "Masculino", "Activo", "AB-", "3239999999", "maherrera@gob.co",  LocalDate.of(2015, 2, 28)));
         personas.add(new person("Maria Camila Diaz",       "1010111111", "Femenino",  "Activo", "A+",  "3184444444", "mcdiaz@gob.co",     LocalDate.of(2023, 6,  5)));
 
-        // =====================================================
-        // CONTRATOS
-        // =====================================================
-
+        //CONTRATOS//
         contratos.add(new contrato(1, "1001234567", "Planta",   3500000, "10/05/2020"));
         contratos.add(new contrato(2, "1002345678", "Temporal", 2800000, "15/03/2019"));
 
-        // =====================================================
-        // SITUACIONES
-        // =====================================================
-
+        //SITUACIONES ADMINISTRATIVAS//
         situaciones.add(new SituacionAdministrativa(
             "1001234567", "Vacaciones",
             LocalDate.of(2026, 1, 10), LocalDate.of(2026, 1, 20), "RES-001"
         ));
 
-        // =====================================================
-        // INCENTIVOS
-        // =====================================================
-
+        //INCENTIVOS//
         incentivos.add(new Incentivo(
             1, "1001234567", "Reconocimiento",
             LocalDate.of(2026, 3, 10), 2026,
             "Excelente desempeno en el trabajo", "ACT-001"
         ));
 
-        // =====================================================
-        // EVALUACIONES MEDICAS
-        // =====================================================
-
+        //EVALUACIONES MEDICAS//
         evaluaciones.add(new EvaluacionMedica(
             "1001234567", LocalDate.of(2026, 4, 12),
             "Apto", "Sin restricciones", "Ingreso",
             "70.5", "1.75", "Ninguna", "Dra. Carolina Ruiz"
         ));
 
-        // =====================================================
-        // ACCIDENTES
-        // =====================================================
-
+        //ACCIDENTES LABORALES//
         accidentes.add(new AccidenteLaboral(
             "1003456789", LocalDate.of(2026, 5, 1),
             "Accidente", "Caida en escaleras",

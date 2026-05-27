@@ -11,7 +11,6 @@ import java.util.Scanner;
 
 public class main {
 
-    // ── ArrayLists de datos ──────────────────────────────────────────
     static ArrayList<person>                  personas     = new ArrayList<>();
     static ArrayList<contrato>                contratos    = new ArrayList<>();
     static ArrayList<SituacionAdministrativa> situaciones  = new ArrayList<>();
@@ -20,7 +19,6 @@ public class main {
     static ArrayList<AccidenteLaboral>        accidentes   = new ArrayList<>();
     static ArrayList<PerfilSociodemografico>  perfiles     = new ArrayList<>();
 
-    // ── Constantes ───────────────────────────────────────────────────
     static final String[] TIPOS_INCENTIVO = {
         "Cumpleanos (Celebra la Vida)",
         "Tiempo de servicio",
@@ -37,20 +35,14 @@ public class main {
     static final String CLAVE_DIRECTIVOS = "Directivos";
 
     static final Scanner           sc            = new Scanner(System.in);
-    // CAMBIO 8: usar "d/M/yyyy" en lugar de "dd/MM/yyyy" para aceptar dígitos sueltos
     static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("d/M/yyyy");
 
-    // ================================================================
-    // MAIN
-    // ================================================================
+    // MAIN //
 
     public static void main(String[] args) {
 
         Seed.personasCreadas(personas, contratos, situaciones, incentivos, evaluaciones, accidentes);
-
-        // CAMBIO 1: pantalla de bienvenida
         mostrarBienvenida();
-
         int opcion;
         do {
             opcion = leerOpcionMenuPrincipal();
@@ -66,7 +58,6 @@ public class main {
         System.out.println("Programa finalizado.");
     }
 
-    // CAMBIO 1: pantalla de bienvenida
     public static void mostrarBienvenida() {
         System.out.println("==============================================");
         System.out.println("     SISTEMA DE GESTION DE TALENTO HUMANO");
@@ -78,20 +69,16 @@ public class main {
         System.out.print("\nPresione ENTER para continuar...");
         sc.nextLine();
     }
-
-    // ================================================================
-    // METODOS DE LECTURA
-    // ================================================================
-
-    // CAMBIOS 1 y 2: encabezado "Menu principal" + nombres cortos de opciones
+    
+    // MENU PRINCIPAL//
     public static int leerOpcionMenuPrincipal() {
         while (true) {
-            System.out.println("\nMenu principal");
+            System.out.println("\n----------MENU PRINCIPAL--------");
             System.out.println();
             System.out.println("¿Que deseas hacer?");
             System.out.println();
-            System.out.println("1) Personas");
-            System.out.println("2) Contratos");
+            System.out.println("1) Gestion de Personas");
+            System.out.println("2) Gestion de Contratos");
             System.out.println("3) Situaciones administrativas");
             System.out.println("4) Control de vacaciones");
             System.out.println("5) Plan de bienestar e incentivos");
@@ -228,7 +215,6 @@ public class main {
         }
     }
 
-    // CAMBIO 9: leerTipoSituacion ahora acepta 0 para cancelar → retorna -1
     public static int leerTipoSituacion() {
         while (true) {
             System.out.println("\nSeleccione el tipo de situacion administrativa:");
@@ -297,7 +283,6 @@ public class main {
         }
     }
 
-    // CAMBIO 8: FORMATO_FECHA usa "d/M/yyyy" → acepta "1/5/2026" y "01/05/2026"
     public static LocalDate leerFecha(String pregunta) {
         while (true) {
             System.out.print(pregunta);
@@ -390,7 +375,6 @@ public class main {
         }
     }
 
-    // CAMBIO 11: pide contraseña, retorna true si es correcta
     public static boolean verificarClaveDirectivos() {
         System.out.print("\nIngrese la contrasena de acceso (0 para cancelar): ");
         String clave = sc.nextLine().trim();
@@ -400,10 +384,7 @@ public class main {
         return false;
     }
 
-    // ================================================================
-    // MENUS DE NAVEGACION
-    // ================================================================
-
+    //MENUS DE GESTIONES//
     public static void menuPersonas() {
         int op;
         do {
@@ -486,45 +467,34 @@ public class main {
         } while (op != 0);
     }
 
-    // ================================================================
-    // UTILIDADES
-    // ================================================================
-
-    // CAMBIO 10: ordena el ArrayList de personas alfabéticamente por nombre
     public static ArrayList<person> personasOrdenadas() {
         ArrayList<person> copia = new ArrayList<>(personas);
         Collections.sort(copia, new Comparator<person>() {
+            @Override
             public int compare(person a, person b) {
                 return a.name.compareToIgnoreCase(b.name);
             }
         });
         return copia;
     }
-
-    // ================================================================
-    // OPERACIONES DE PERSONAS
-    // ================================================================
-
+    
+    //GESTIONES CON PERSONAS// 
     public static void crearPersona() {
-        // CAMBIO 4: salto de línea antes de pedir datos
         System.out.println();
 
         String nombre = leerTexto("Nombre: ");
         String cedula = leerCedula("Cedula: ");
-
-        // CAMBIO 6: no permitir cédulas duplicadas
         if (buscarPorCedula(cedula) != null) {
             System.out.println("Ya existe una persona con esa cedula. Operacion cancelada.");
             return;
         }
 
         String genero          = leerTexto("Genero: ");
-        String estado          = leerTexto("Estado: ");
+        String estado          = leerTexto("Estado Civil: ");
         String rh              = leerTexto("RH: ");
         String telefono        = leerTexto("Telefono: ");
-        // CAMBIO 3: campo email después de teléfono
         String email           = leerTexto("Email: ");
-        LocalDate fechaIngreso = leerFecha("Fecha de ingreso (DD/MM/AAAA): ");
+        LocalDate fechaIngreso = leerFecha("Fecha de Ingreso (DD/MM/AAAA): ");
 
         personas.add(new person(nombre, cedula, genero, estado, rh, telefono, email, fechaIngreso));
         System.out.println("\nPersona creada correctamente.");
@@ -544,7 +514,6 @@ public class main {
         else System.out.println("\nPersona no encontrada.");
     }
 
-    // CAMBIO 10: imprime personas en orden alfabético
     public static void mostrarTodas() {
         if (personas.isEmpty()) { System.out.println("\nNo hay personas registradas."); return; }
         ArrayList<person> ordenadas = personasOrdenadas();
@@ -552,10 +521,7 @@ public class main {
         for (person p : ordenadas) System.out.println(p);
     }
 
-    // ================================================================
-    // OPERACIONES DE CONTRATOS
-    // ================================================================
-
+    //GESTIONES CON CONTRATOS//
     public static void crearContrato() {
         // CAMBIO 5: no permitir IDs de contrato duplicados
         int id;
@@ -608,21 +574,15 @@ public class main {
         if (!encontrado) System.out.println("\nNo existen contratos para esa persona.");
     }
 
-    // ================================================================
-    // OPERACIONES RF-02 - SITUACIONES ADMINISTRATIVAS
-    // ================================================================
-
+    //GESTIONES CON SITUACIONES ADMINISTRATIVAS//
     public static void registrarSituacion() {
-        // CAMBIO 7: "0 para cancelar" ya está en leerCedulaExistente
         String cedula = leerCedulaExistente("Cedula del servidor");
         if (cedula == null) { System.out.println("Operacion cancelada."); return; }
 
-        // CAMBIO 9: leerTipoSituacion retorna -1 si el usuario elige 0 (Volver)
         int indiceTipo = leerTipoSituacion();
         if (indiceTipo == -1) { System.out.println("Operacion cancelada."); return; }
 
         String tipo = SituacionAdministrativa.TIPOS[indiceTipo];
-        // CAMBIO 7: hint "0 para cancelar" en acto administrativo
         String acto = leerTexto("Acto administrativo (resolucion/numero) [0 para cancelar]: ");
         if (acto.equals("0")) { System.out.println("Operacion cancelada."); return; }
 
@@ -630,7 +590,6 @@ public class main {
         LocalDate fin;
 
         while (true) {
-            // CAMBIO 7: hint "0 para cancelar" en fechas
             inicio = leerFecha("Fecha de inicio (DD/MM/AAAA) [0 para cancelar]: ");
             fin    = leerFecha("Fecha de fin    (DD/MM/AAAA) [0 para cancelar]: ");
 
@@ -694,10 +653,7 @@ public class main {
         if (!hayRegistros) System.out.println("No hay situaciones registradas para este servidor.");
     }
 
-    // ================================================================
-    // OPERACIONES RF-03 - CONTROL DE VACACIONES
-    // ================================================================
-
+    //GESTIONES CON CONTROL DE VACACIONES//
     public static int calcularPeriodosAcumulados(person p) {
         LocalDate hoy = LocalDate.now();
         int anios = hoy.getYear() - p.fechaIngreso.getYear();
@@ -809,10 +765,7 @@ public class main {
         System.out.println("========================================");
     }
 
-    // ================================================================
-    // OPERACIONES RF-04 - PLAN DE BIENESTAR E INCENTIVOS
-    // ================================================================
-
+    //GESTIONES CON PLAN DE BIENESTAR E INCENTIVOS//
     public static void registrarIncentivo() {
         String cedula = leerCedulaExistente("Cedula del servidor");
         if (cedula == null) { System.out.println("Operacion cancelada."); return; }
@@ -896,10 +849,7 @@ public class main {
         System.out.println("==========================================");
     }
 
-    // ================================================================
-    // OPERACIONES RF-05 - SEGURIDAD Y SALUD EN EL TRABAJO
-    // ================================================================
-
+    //GESTIOMES CON SEGURIDAD Y SALUD EN EL TRABAJO//
     public static void registrarEvaluacionMedica() {
         String cedula = leerCedulaExistente("Cedula del servidor");
         if (cedula == null) { System.out.println("Operacion cancelada."); return; }
@@ -940,7 +890,6 @@ public class main {
         System.out.println("========================================");
     }
 
-    // CAMBIO 10 y 11: ordena por nombre; acceso protegido con contraseña en menuSeguridadYSalud
     public static void consultarCondicionesMedicas() {
         if (personas.isEmpty()) { System.out.println("\nNo hay servidores registrados."); return; }
 
@@ -950,7 +899,6 @@ public class main {
         System.out.println("  Fecha consulta: " + LocalDate.now());
         System.out.println("========================================");
 
-        // CAMBIO 10: iterar en orden alfabético
         ArrayList<person> ordenadas = personasOrdenadas();
         for (person p : ordenadas) {
             EvaluacionMedica ultima = null;
@@ -1077,6 +1025,6 @@ public class main {
                 encontrado = true;
             }
         }
-        if (!encontrado) System.out.println("No existe perfil sociodemografico para este servidor.");
+    if (!encontrado) System.out.println("\nNo existe perfil sociodemografico para este servidor.");
     }
 }

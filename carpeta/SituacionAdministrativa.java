@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 public class SituacionAdministrativa {
 
-    // Tipos válidos de situación administrativa según RF-02
     public static final String[] TIPOS = {
         "Vacaciones",
         "Permiso (1 dia)",
@@ -23,7 +22,7 @@ public class SituacionAdministrativa {
     public String  tipo;
     public LocalDate fechaInicio;
     public LocalDate fechaFin;
-    public String  actoAdministrativo; // añadido para RF-03: número de resolución o acto
+    public String  actoAdministrativo; 
 
     public SituacionAdministrativa(
         String cedulaServidor,
@@ -39,15 +38,10 @@ public class SituacionAdministrativa {
         this.actoAdministrativo = actoAdministrativo;
     }
 
-    /**
-     * Verifica si esta situación se solapa (total o parcialmente)
-     * con el rango [inicio, fin] recibido.
-     */
     public boolean seSolapaCon(LocalDate inicio, LocalDate fin) {
         return !this.fechaFin.isBefore(inicio) && !fin.isBefore(this.fechaInicio);
     }
 
-    /** Indica si la situación está activa en la fecha de hoy. */
     public boolean estaActiva() {
         LocalDate hoy = LocalDate.now();
         return !hoy.isBefore(fechaInicio) && !hoy.isAfter(fechaFin);
