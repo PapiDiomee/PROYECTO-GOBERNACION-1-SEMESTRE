@@ -590,8 +590,8 @@ public class main {
         LocalDate fin;
 
         while (true) {
-            inicio = leerFecha("Fecha de inicio (DD/MM/AAAA) [0 para cancelar]: ");
-            fin    = leerFecha("Fecha de fin    (DD/MM/AAAA) [0 para cancelar]: ");
+            inicio = leerFecha("Fecha de inicio (DD/MM/AAAA): ");
+            fin    = leerFecha("Fecha de fin    (DD/MM/AAAA): ");
 
             if (inicio.isAfter(fin)) {
                 System.out.println("La fecha de inicio no puede ser posterior a la fecha de fin.");

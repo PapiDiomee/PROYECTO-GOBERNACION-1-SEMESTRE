@@ -15,7 +15,7 @@ public class Seed {
     ) {
 
         //PERSONAS//
-        personas.add(new person("Juan Felipe Perez",       "1001234567", "Masculino", "Activo", "O+",  "3201111111", "jfperez@gob.co",    LocalDate.of(2020, 5, 10)));
+        personas.add(new person("Manuel Castro Barinas",       "1001234567", "Masculino", "Activo", "O+",  "3201111111", "Soymanuelcastrofornai@gmail.com",    LocalDate.of(2020, 5, 10)));
         personas.add(new person("Maria Paz Gomez",         "1002345678", "Femenino",  "Activo", "A+",  "3112222222", "mpgomez@gob.co",    LocalDate.of(2019, 3, 15)));
         personas.add(new person("Carlos Andres Ramirez",   "1003456789", "Masculino", "Activo", "B+",  "3003333333", "caramirez@gob.co",  LocalDate.of(2018, 7, 20)));
         personas.add(new person("Laura Alejandra Torres",  "1004567890", "Femenino",  "Activo", "AB+", "3214444444", "latorres@gob.co",   LocalDate.of(2021, 1,  8)));
